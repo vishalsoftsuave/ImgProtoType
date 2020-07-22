@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PinchZoomPan from "react-responsive-pinch-zoom-pan";
 import { Container, Box } from "@material-ui/core";
+import Hotspot from "./Hotspot"
 
 class WelcomePage extends Component {
     constructor(props) {
@@ -12,10 +13,28 @@ class WelcomePage extends Component {
             left:391,
             originalTop:133,
             originalLeft:391,
-            display:'inline-block'
+            display: true,
+            hotspotList: [],
+            isCreateHotSpot: true
         }
         this.myRef = React.createRef();
         this.myRefZoom = React.createRef();
+    }
+
+    createHotSpot = (event) => {
+        if(!this.state.isCreateHotSpot)
+            return;
+        let clickedAt = {
+            left: event.pageX - event.currentTarget.offsetLeft,
+            top: event.pageY - event.currentTarget.offsetTop
+        }
+        let newHotSpot = {
+            originalLeft: this.myRefZoom.current.state.left +(clickedAt.left*this.myRefZoom.current.state.scale),
+            originalTop: this.myRefZoom.current.state.top +(clickedAt.top*this.myRefZoom.current.state.scale),
+            display: true
+        }
+        newHotSpot = {...newHotSpot, ...{left: newHotSpot.originalLeft, top: newHotSpot.originalTop}}
+        this.setState({hotspotList: [...this.state.hotspotList, newHotSpot]});
     }
 
 
@@ -23,7 +42,7 @@ class WelcomePage extends Component {
     render() {
         return (
             <Container>
-                <Box mt={10} width="100%" stlye={{align:"center"}}>
+                <Box mt={10} width="100%">
                    {/* <div style={{
                         marginLeft: '400px',
                         marginTop: '130px',
@@ -40,15 +59,20 @@ class WelcomePage extends Component {
                            <img src={'https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg'} style={{width:'100%'}}/>
                         </div>
                     </div>*/}
-                    <div style={{position:'relative', fontSize: '25px',width:'2px',fontWeight:900, display:this.state.display,
-                        zIndex:'1',
-                        top:this.state.top+'px', left:this.state.left+'px',
-                        color:'red'}}>.</div>
-                    <div onWheel={this.onMouseWheel} style={{ width: '500px', height: '500px' }}>
+                    <Box onWheel={this.onMouseWheel} onClick={this.createHotSpot} style={{cursor:"crosshair", width: '500px', height: '500px', overflow:"hidden" }}>
+                    {/* {this.state.display && <Hotspot style={{position: "relative"}} coordinates={{left: this.state.left, top: this.state.top }}/>} */}
+                    {this.state.hotspotList.length>0 && 
+                    this.state.hotspotList.map((hotspot, index)=>{
+                        let {display, top, left} = hotspot;
+                        if(display)
+                            return <Hotspot style={{position: "relative"}} coordinates={{left, top}}/>
+                        return ""
+                    })
+                    }
                         <PinchZoomPan ref={this.myRefZoom} initialScale={1}>
                             <img ref={this.myRef} alt='Test Image' src='https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg' />
                         </PinchZoomPan>
-                    </div>
+                    </Box>
                 </Box>
             </Container>
         );
@@ -60,10 +84,22 @@ class WelcomePage extends Component {
             let width = this.myRef.current.width
             console.log(this.myRef.current.style.transform)
 */
-            let left=this.myRefZoom.current.state.left +(this.state.originalLeft*this.myRefZoom.current.state.scale)
-            let top=this.myRefZoom.current.state.top +(this.state.originalTop*this.myRefZoom.current.state.scale)
-            let display = left>=0 && top>=0
-            this.setState({left:left,top:top, display:display?'inline-block':'none'})
+            let {hotspotList} = this.state;
+            if(!hotspotList.length>0){
+                return;
+            }
+            hotspotList = hotspotList.map((hotspot)=>{
+                let {display, originalLeft, originalTop} = hotspot;
+                hotspot.left=this.myRefZoom.current.state.left +(originalLeft*this.myRefZoom.current.state.scale);
+                hotspot.top=this.myRefZoom.current.state.top +(originalTop*this.myRefZoom.current.state.scale);
+                hotspot.display = hotspot.left>=0 && hotspot.top>=0;
+                return hotspot;
+            })
+            this.setState({hotspotList});
+            // let left=this.myRefZoom.current.state.left +(this.state.originalLeft*this.myRefZoom.current.state.scale)
+            // let top=this.myRefZoom.current.state.top +(this.state.originalTop*this.myRefZoom.current.state.scale)
+            // let display = left>=0 && top>=0
+            // this.setState({left,top, display})
         },50)
 
     }
