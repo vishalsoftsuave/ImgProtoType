@@ -61,13 +61,13 @@ class WelcomePage extends Component {
                            <img src={'https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg'} style={{width:'100%'}}/>
                         </div>
                     </div>*/}
-                    <Box onWheel={this.onMouseWheel} onClick={this.createHotSpot} style={{cursor:"crosshair", width: '500px', height: '500px', overflow:"hidden" }}>
+                    <Box onWheel={this.onMouseWheel} onClick={this.createHotSpot} style={{cursor:"crosshair",position:'relative', width: '500px', height: '500px', overflow:"hidden" }}>
                     {/* {this.state.display && <Hotspot style={{position: "relative"}} coordinates={{left: this.state.left, top: this.state.top }}/>} */}
                     {this.state.hotspotList.length>0 && 
                     this.state.hotspotList.map((hotspot, index)=>{
                         let {display, top, left} = hotspot;
                         if(display)
-                            return <Hotspot style={{position: "relative"}} coordinates={{left, top}}/>
+                            return <Hotspot coordinates={{left, top}}/>
                         return ""
                     })
                     }

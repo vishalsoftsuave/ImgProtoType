@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   hotspot: {
-    position:'relative', 
+    position:'absolute',
     fontSize: '25px', 
     width:'2px',
     fontWeight:900,
