@@ -29,11 +29,13 @@ class WelcomePage extends Component {
             top: event.pageY - event.currentTarget.offsetTop
         }
         let newHotSpot = {
-            originalLeft: this.myRefZoom.current.state.left +(clickedAt.left*this.myRefZoom.current.state.scale),
-            originalTop: this.myRefZoom.current.state.top +(clickedAt.top*this.myRefZoom.current.state.scale),
+            originalLeft: (this.myRefZoom.current.state.left*-1) +(clickedAt.left/this.myRefZoom.current.state.scale),
+            originalTop: (this.myRefZoom.current.state.top *-1)+(clickedAt.top/this.myRefZoom.current.state.scale),
             display: true
         }
-        newHotSpot = {...newHotSpot, ...{left: newHotSpot.originalLeft, top: newHotSpot.originalTop}}
+        let left=this.myRefZoom.current.state.left +(newHotSpot.originalLeft*this.myRefZoom.current.state.scale);
+        let top=this.myRefZoom.current.state.top +(newHotSpot.originalTop*this.myRefZoom.current.state.scale);
+        newHotSpot = {...newHotSpot, ...{left: left, top: top}}
         this.setState({hotspotList: [...this.state.hotspotList, newHotSpot]});
     }
 
