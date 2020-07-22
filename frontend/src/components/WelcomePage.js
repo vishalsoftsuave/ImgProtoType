@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PinchZoomPan from "react-responsive-pinch-zoom-pan";
+import { Container, Box } from "@material-ui/core";
 
 class WelcomePage extends Component {
     constructor(props) {
@@ -14,14 +15,14 @@ class WelcomePage extends Component {
         }
         this.myRef = React.createRef();
         this.myRefZoom = React.createRef();
-
-
     }
+
+
 
     render() {
         return (
-            <Fragment>
-                <div>
+            <Container>
+                <Box mt={10} width="100%" stlye={{align:"center"}}>
                    {/* <div style={{
                         marginLeft: '400px',
                         marginTop: '130px',
@@ -38,14 +39,17 @@ class WelcomePage extends Component {
                            <img src={'https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg'} style={{width:'100%'}}/>
                         </div>
                     </div>*/}
-                    <div style={{position:'absolute', fontSize: '25px', zIndex:'1', top:this.state.top+'px', left:this.state.left+'px', color:'red'}}>.</div>
                     <div onWheel={this.onMouseWheel} style={{ width: '500px', height: '500px' }}>
+                    <div style={{position:'relative', fontSize: '25px', 
+                    zIndex:'1', 
+                    top:this.state.top+'px', left:this.state.left+'px', 
+                    color:'red'}}>.</div>
                         <PinchZoomPan ref={this.myRefZoom} initialScale={1}>
                             <img ref={this.myRef} alt='Test Image' src='https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg' />
                         </PinchZoomPan>
                     </div>
-                </div>
-            </Fragment>
+                </Box>
+            </Container>
         );
     }
 
