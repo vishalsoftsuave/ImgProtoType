@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import WelcomePage from './components/WelcomePage'
 import ViewImage from './components/ViewImage'
+import './App.css'
 const App = () => {
   return (
     <Router>

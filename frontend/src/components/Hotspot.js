@@ -9,7 +9,9 @@ const useStyles = makeStyles(theme => ({
     width:'2px',
     fontWeight:900,
     zIndex:'1',
-    color:'red'
+    color:'red',
+    lineHeight:'0px',
+    height:'0px'
   }
 }));
 
