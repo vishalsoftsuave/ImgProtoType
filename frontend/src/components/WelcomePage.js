@@ -39,11 +39,11 @@ class WelcomePage extends Component {
                            <img src={'https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg'} style={{width:'100%'}}/>
                         </div>
                     </div>*/}
+                    <div style={{position:'relative', fontSize: '25px',width:'2px',fontWeight:900, display:'inline-block',
+                        zIndex:'1',
+                        top:this.state.top+'px', left:this.state.left+'px',
+                        color:'red'}}>.</div>
                     <div onWheel={this.onMouseWheel} style={{ width: '500px', height: '500px' }}>
-                    <div style={{position:'relative', fontSize: '25px', 
-                    zIndex:'1', 
-                    top:this.state.top+'px', left:this.state.left+'px', 
-                    color:'red'}}>.</div>
                         <PinchZoomPan ref={this.myRefZoom} initialScale={1}>
                             <img ref={this.myRef} alt='Test Image' src='https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg' />
                         </PinchZoomPan>
@@ -59,14 +59,10 @@ class WelcomePage extends Component {
             let width = this.myRef.current.width
             console.log(this.myRef.current.style.transform)
 */
-            let left=(this.myRefZoom.current.state.left +this.state.originalLeft)*((this.myRefZoom.current.state.scale))
-            let top=(this.myRefZoom.current.state.top +this.state.originalTop)*((this.myRefZoom.current.state.scale))
+            let left=this.myRefZoom.current.state.left +(this.state.originalLeft*this.myRefZoom.current.state.scale)
+            let top=this.myRefZoom.current.state.top +(this.state.originalTop*this.myRefZoom.current.state.scale)
             this.setState({left:left,top:top})
-            console.log(this.myRefZoom.current.state.left)
-            console.log(this.myRefZoom.current.state.top)
-
-
-        },500)
+        },50)
 
     }
 }
