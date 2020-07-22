@@ -12,6 +12,7 @@ class WelcomePage extends Component {
             left:391,
             originalTop:133,
             originalLeft:391,
+            display:'inline-block'
         }
         this.myRef = React.createRef();
         this.myRefZoom = React.createRef();
@@ -39,7 +40,7 @@ class WelcomePage extends Component {
                            <img src={'https://live.staticflickr.com/4561/38054606355_26429c884f_b.jpg'} style={{width:'100%'}}/>
                         </div>
                     </div>*/}
-                    <div style={{position:'relative', fontSize: '25px',width:'2px',fontWeight:900, display:'inline-block',
+                    <div style={{position:'relative', fontSize: '25px',width:'2px',fontWeight:900, display:this.state.display,
                         zIndex:'1',
                         top:this.state.top+'px', left:this.state.left+'px',
                         color:'red'}}>.</div>
@@ -61,7 +62,8 @@ class WelcomePage extends Component {
 */
             let left=this.myRefZoom.current.state.left +(this.state.originalLeft*this.myRefZoom.current.state.scale)
             let top=this.myRefZoom.current.state.top +(this.state.originalTop*this.myRefZoom.current.state.scale)
-            this.setState({left:left,top:top})
+            let display = left>=0 && top>=0
+            this.setState({left:left,top:top, display:display?'inline-block':'none'})
         },50)
 
     }
