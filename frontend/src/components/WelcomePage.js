@@ -13,8 +13,9 @@ import mapData from "../staticData/mapData"
 
 const useStyles = makeStyles((theme) => ({
 	mapContainer: {
-    // backgroundColor: "transperent",
-    // backgroundColor: "black",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   map: {
 		width: "400px",
@@ -43,12 +44,10 @@ const WelcomePage = (props) => {
   const classes = useStyles();
   return (
     <Container>
-      <Box mt={30}display={"flex"} className={classes.mapContainer}>
-        {(mapData && mapData.length) && mapData.map((map, index)=>{
-          return <Box className={classes.map} border={1} style={{backgroundImage: `url(${map.image})`}}>
-            <Link to={`/viewimage/${index}`}><Button variant="outlined" className={classes.viewButton}>View</Button></Link>
-          </Box>
-        })}
+      <Box mt={30} display={"flex"} className={classes.mapContainer}>
+        <Box className={classes.map} border={1} style={{backgroundImage: `url(${mapData[0].image})`}}>
+            <Link to={`/viewimage/0`}><Button variant="outlined" className={classes.viewButton}>View</Button></Link>
+        </Box>
       </Box>
     </Container>
   );

@@ -25,26 +25,60 @@ class ViewImage extends Component {
 		this.myRef = React.createRef();
 		this.myRefZoom = React.createRef();
 		}
+
 		componentDidMount(){
+			this.setState(this.getHotspotListData());
+		}
+
+		getHotspotListData= ()=>{
+			let hotspotList = [];
+			let mapIndex= this.props.match.params.id;
 			let hotspotListArray =JSON.parse(localStorage.getItem("hotspotListArray"));
 			if(Array.isArray(hotspotListArray)){
-				let hotspotListObject = hotspotListArray.find((hotspotList)=>hotspotList.mapid===this.state.mapIndex)
-				let hotspotList = [];
+				let hotspotListObject = hotspotListArray.find((hotspotList)=>hotspotList.mapid===mapIndex)
 				if(hotspotListObject)
 					hotspotList = hotspotListObject.hotspotList;
-				hotspotList && this.setState({hotspotList}, this.onMouseWheel);
+			}
+			return {hotspotList, mapIndex}
+		}
+		componentDidUpdate(prevProps, prevState){
+			if(prevProps.match.params.id != this.props.match.params.id)
+			{
+				this.storeHotspotData();
+				this.setState(this.getHotspotListData(), ()=>this.onMouseWheel);
+			}else if(prevState.hotspotList && (prevState.hotspotList.length != this.state.hotspotList.length))
+			{
+				this.onMouseWheel();
 			}
 		}
     
-    onChangeActiveHotspotData = (e)=>{
+    onChangeActiveHotspotData = (e, data)=>{
         let {hotspotList, activeHotspotIndex} = this.state;
-        let hotspot = hotspotList.find((hotspot, index) => index == activeHotspotIndex);
-        hotspot.value = e.target.value;
+				let hotspot = hotspotList.find((hotspot, index) => index == activeHotspotIndex);
+				let index = e.currentTarget.getAttribute("dataindex");
+        hotspot.data = { name: data, index};
         this.setState({hotspotList});
-    }
+		}
+
+		storeHotspotData = () =>{	
+			let hotspotListArray = JSON.parse(localStorage.getItem("hotspotListArray"));
+			let newhotspotList = []
+			if(Array.isArray(hotspotListArray)){
+				newhotspotList = hotspotListArray.find(hotspotList=>hotspotList.mapid==this.state.mapIndex);
+				if(newhotspotList)
+					newhotspotList.hotspotList = this.state.hotspotList
+				else{
+					hotspotListArray.push({mapid: this.state.mapIndex, hotspotList: this.state.hotspotList})
+				}		
+			}else{
+				hotspotListArray = [];
+				hotspotListArray.push({mapid: this.state.mapIndex, hotspotList: this.state.hotspotList});
+			}
+			localStorage.setItem('hotspotListArray', JSON.stringify(hotspotListArray));
+		}
 
 	createHotSpot = (event) => {
-        let zoomIconClicked = event.target.closest(".iconButton") ? true: false;
+				let zoomIconClicked = event.target.closest(".iconButton") ? true: false;
         if(zoomIconClicked)
         this.onMouseWheel(event)
 
@@ -70,7 +104,7 @@ class ViewImage extends Component {
             newHotSpot.originalTop * this.myRefZoom.current.state.scale;
 		newHotSpot = { 
             ...newHotSpot,
-            ...{ left, top, value: "" },
+            ...{ left, top, data: "" },
             };
 		this.setState({ hotspotList: [...this.state.hotspotList, newHotSpot] });
 	};
@@ -95,7 +129,9 @@ class ViewImage extends Component {
         }
 		return (
 			<Container>
-				<Box mt={10} width="100%" align={"center"}>
+				<Box mt={10} width="100%"  align={"center"} 
+				// style={{display: "flex", height:"90vh", alignItems: "center", justifyContent:"center"}} 
+				>
 					<Box
 						onWheel={this.onMouseWheel}
 						onClick={this.createHotSpot}
@@ -122,7 +158,7 @@ class ViewImage extends Component {
 									);
 								return "";
 							})}
-						<PinchZoomPan ref={this.myRefZoom} initialScale={1}>
+						<PinchZoomPan ref={this.myRefZoom} initialScale={1} className="testingDiv">
 							<img
 								ref={this.myRef}
 								className="testing"
@@ -158,20 +194,7 @@ class ViewImage extends Component {
     };
     
     componentWillUnmount(){
-			let hotspotListArray = JSON.parse(localStorage.getItem("hotspotListArray"));
-			let newhotspotList = []
-			if(Array.isArray(hotspotListArray)){
-				newhotspotList = hotspotListArray.find(hotspotList=>hotspotList.mapid==this.state.mapIndex);
-				if(newhotspotList)
-					newhotspotList.hotspotList = this.state.hotspotList
-				else{
-					hotspotListArray.push({mapid: this.state.mapIndex, hotspotList: this.state.hotspotList})
-				}		
-			}else{
-				hotspotListArray = [];
-				hotspotListArray.push({mapid: this.state.mapIndex, hotspotList: this.state.hotspotList});
-			}
-			localStorage.setItem('hotspotListArray', JSON.stringify(hotspotListArray));
+			this.storeHotspotData();
     }
 }
 

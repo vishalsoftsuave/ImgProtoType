@@ -1,7 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, Fragment} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import RoomIcon from "@material-ui/icons/Room";
 import ClearIcon from '@material-ui/icons/Clear';
+import {Link} from "react-router-dom";
+import { withRouter } from "react-router";
+
+import mapData from '../staticData/mapData';
 
 import { Box, Typography, Button, TextField } from "@material-ui/core";
 
@@ -36,11 +40,33 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: 0
     }
   },
+  viewButton: {
+    textDecoration: "none",
+    backgroundColor: "white",
+    fontWeight: 600,
+    padding: "10px 30px",
+    '&:hover': { backgroundColor: "white", },
+  }
 }));
 
-const HotSpot = ({ hotspot, ishotspotActive, hotspotIndex, toggleHotspot, onChangeActiveHotspotData }) => {
+const HotSpot = ({ hotspot, ishotspotActive, hotspotIndex, toggleHotspot, onChangeActiveHotspotData, history }) => {
   const classes = useStyles();
-  let {top, left, value} = hotspot;
+  const [showData, toggleShowData] = useState(true);
+  let {top, left, data} = hotspot;
+
+  useEffect(()=>{
+    if(data!="")
+    {
+      toggleShowData(false)
+    }else if(!showData)
+    {
+      toggleShowData(true)
+    }
+  },[data])
+  const redirectMap = (e)=>{
+    toggleHotspot(e,false);
+    history.push(`/viewimage/${data.index}`);
+  }
 
 	if (!ishotspotActive)
 		return (
@@ -63,11 +89,15 @@ const HotSpot = ({ hotspot, ishotspotActive, hotspotIndex, toggleHotspot, onChan
       left: (left || 0) + "px",
     }}>
       <ClearIcon style={{float: "right", cursor: "pointer"}} onClick={e=>toggleHotspot(e,false)}/>
-      <TextField name="value" onChange={(e)=>onChangeActiveHotspotData(e)}className={classes.textField} variant="outlined" value={value || ""} />
+      <Box>
+        {showData ? ((mapData.length >0) && mapData.map((data, index)=>{
+          return <Fragment key={index}><Button  dataindex={index} onClick={(e, index)=>onChangeActiveHotspotData(e, data.name)}>{data.name}</Button><br/></Fragment>
+        })): (<Button variant="outlined" className={classes.viewButton} onClick={(e)=>redirectMap(e)}>{data.name || ""}</Button>)}
+      </Box>
 
     </Box>
     );
 	}
 };
 
-export default HotSpot;
+export default withRouter(HotSpot);
